@@ -7,3 +7,10 @@
 .kiro/steering/byterover-rules.md
 .qoder/rules/byterover-rules.md
 .augment/rules/byterover-rules.md
+
+# Environment variables
+.env
+.env.local
+
+# Netlify
+.netlify

@@ -477,14 +477,30 @@
 - The message should be enthusiastic, confident, and clearly define the next step (e.g., "I'll send over that proposal by EOD").`
         };
 
-        // --- API Call (via Netlify Function) ---
+        // --- API Call ---
         async function callGeminiAPI(userQuery, systemPrompt) {
-            // Call our secure Netlify Function instead of Gemini directly
-            const functionUrl = '/.netlify/functions/generate-mom';
+            const apiKey = ""; // Leave blank
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
             const payload = {
-                userQuery: userQuery,
-                systemPrompt: systemPrompt
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "whatsappMessage": { "type": "STRING" },
+                            "actionItems": {
+                                "type": "ARRAY",
+                                "items": { "type": "STRING" }
+                            }
+                        },
+                        required: ["whatsappMessage", "actionItems"]
+                    }
+                }
             };
 
             // Exponential backoff for retries
@@ -492,7 +508,7 @@
             let delay = 1000;
             for (let i = 0; i < 5; i++) {
                 try {
-                    response = await fetch(functionUrl, {
+                    response = await fetch(apiUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
@@ -506,8 +522,7 @@
                         delay *= 2;
                     } else {
                         // Don't retry on other client errors
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || `API Error: ${response.status} ${response.statusText}`);
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
                     }
                 } catch (error) {
                     if (i === 4) throw error; // Re-throw last error
@@ -521,7 +536,18 @@
             }
 
             const result = await response.json();
-            return result;
+            const candidate = result.candidates?.[0];
+
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+                try {
+                    // The API should return JSON text, so parse it
+                    return JSON.parse(candidate.content.parts[0].text);
+                } catch (e) {
+                    throw new Error("AI returned invalid JSON.");
+                }
+            } else {
+                throw new Error("AI returned no content.");
+            }
         }
         
         // --- Main Form Logic ---
