@@ -22,11 +22,17 @@ exports.handler = async (event, context) => {
     const apiKey = process.env.GEMINI_API_KEY;
     
     if (!apiKey) {
+      console.error('GEMINI_API_KEY environment variable is not set!');
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: 'API key not configured' })
+        body: JSON.stringify({ 
+          error: 'API key not configured. Please set GEMINI_API_KEY in Netlify environment variables.' 
+        })
       };
     }
+    
+    console.log('API key found, length:', apiKey.length);
+    console.log('Using model: gemini-2.0-flash-exp');
 
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
 
@@ -54,9 +60,12 @@ exports.handler = async (event, context) => {
     // Exponential backoff for retries
     let response;
     let delay = 1000;
+    let lastError = null;
     
     for (let i = 0; i < 5; i++) {
       try {
+        console.log(`Attempt ${i + 1}/5: Calling Gemini API...`);
+        
         response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -64,25 +73,43 @@ exports.handler = async (event, context) => {
         });
 
         if (response.ok) {
+          console.log(`Success on attempt ${i + 1}`);
           break; // Success
         } else if (response.status === 429 || response.status >= 500) {
           // Retry on rate limit or server error
-          await new Promise(resolve => setTimeout(resolve, delay));
-          delay *= 2;
-        } else {
-          // Don't retry on other client errors
           const errorText = await response.text();
-          throw new Error(`API Error: ${response.status} ${errorText}`);
+          lastError = `Attempt ${i + 1}: Status ${response.status} - ${errorText}`;
+          console.error(lastError);
+          
+          if (i < 4) { // Don't delay after last attempt
+            console.log(`Retrying in ${delay}ms...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2;
+          }
+        } else {
+          // Don't retry on other client errors (400, 401, 403, etc.)
+          const errorText = await response.text();
+          console.error(`Client error ${response.status}: ${errorText}`);
+          throw new Error(`API Error (${response.status}): ${errorText}`);
         }
       } catch (error) {
+        lastError = error.message;
+        console.error(`Attempt ${i + 1} failed:`, error);
+        
         if (i === 4) throw error; // Re-throw last error
-        await new Promise(resolve => setTimeout(resolve, delay));
-        delay *= 2;
+        
+        if (i < 4) { // Don't delay after last attempt
+          console.log(`Retrying in ${delay}ms...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2;
+        }
       }
     }
 
-    if (!response.ok) {
-      throw new Error(`API call failed after retries: ${response.statusText}`);
+    if (!response || !response.ok) {
+      const errorMsg = lastError || response?.statusText || 'Unknown error';
+      console.error(`All retries exhausted. Last error: ${errorMsg}`);
+      throw new Error(`API call failed after 5 retries: ${errorMsg}`);
     }
 
     const result = await response.json();
