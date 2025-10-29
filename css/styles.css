@@ -194,5 +194,30 @@ body {
 
 /* Utility */
 .main-content {
-    padding-bottom: 70px; /* Space for bottom nav */
+    padding-bottom: 100px; /* Extra space for bottom nav on mobile */
+}
+
+/* Mobile-first responsive improvements */
+@media (max-width: 640px) {
+    .main-content {
+        padding-bottom: 120px; /* More space on mobile */
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Action buttons spacing */
+    .flex.flex-col.sm\:flex-row.gap-4 {
+        margin-bottom: 2rem;
+    }
+    
+    /* Bottom nav more prominent on mobile */
+    .bottom-nav {
+        padding: 0.75rem 0;
+        box-shadow: 0 -6px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Results container spacing */
+    #results-container {
+        margin-bottom: 2rem;
+    }
 }
