@@ -1,0 +1,22 @@
+[build]
+  publish = "."
+  command = "echo 'No build needed - static HTML'"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+# Redirect rules
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
