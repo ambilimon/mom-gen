@@ -6,204 +6,7 @@
     <title>MOM Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light gray background */
-        }
-
-        /* --- Input Styles --- */
-        .form-input {
-            width: 100%;
-            border: 1px solid #d1d5db; /* gray-300 */
-            background-color: #ffffff; /* white */
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem; /* rounded-lg */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            font-size: 0.875rem; /* text-sm */
-            color: #111827; /* gray-900 */
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .form-input::placeholder {
-            color: #6b7280; /* gray-500 */
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #3b82f6; /* blue-500 */
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
-        }
-
-        /* --- Button Styles --- */
-        .btn {
-            padding: 0.75rem 1.25rem;
-            border-radius: 0.5rem; /* rounded-lg */
-            font-weight: 600;
-            font-size: 0.875rem; /* text-sm */
-            transition: all 0.2s;
-            cursor: pointer;
-            text-align: center;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
-        }
-        .btn-primary:active {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08);
-        }
-        .btn-secondary {
-            background-color: #ffffff; /* white */
-            color: #374151; /* gray-700 */
-            border: 1px solid #d1d5db; /* gray-300 */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-        .btn-secondary:hover {
-            background-color: #f9fafb; /* gray-50 */
-        }
-        .btn-danger {
-            background-color: #ef4444; /* red-500 */
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #dc2626; /* red-600 */
-        }
-
-        /* --- Card Styles --- */
-        .card {
-            background-color: #ffffff;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e5e7eb; /* gray-200 */
-        }
-
-        /* --- Modal Styles --- */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            display: none; /* hidden by default */
-            align-items: center;
-            justify-content: center;
-            z-index: 40;
-        }
-        .modal-content {
-            background-color: white;
-            border-radius: 0.75rem; /* rounded-xl */
-            padding: 1.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            max-width: 90%;
-            width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-close-btn {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            color: #9ca3af; /* gray-400 */
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .modal-close-btn:hover {
-            color: #374151; /* gray-700 */
-        }
-
-        /* --- Sidebar Styles --- */
-        .sidebar-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            display: none; /* hidden by default */
-            z-index: 40;
-        }
-        .sidebar-content {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            right: -100%; /* Off-screen */
-            width: 90%;
-            max-width: 400px;
-            background-color: white;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            transition: right 0.3s ease-in-out;
-            z-index: 50;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar-content.open {
-            right: 0;
-        }
-
-        /* --- Bottom Nav Styles --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #ffffff;
-            border-top: 1px solid #e5e7eb; /* gray-200 */
-            display: flex;
-            justify-content: space-around;
-            padding: 0.5rem 0;
-            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
-            z-index: 30;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #6b7280; /* gray-500 */
-            cursor: pointer;
-            padding: 0.25rem 1rem;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
-            font-size: 0.75rem; /* text-xs */
-            font-weight: 500;
-        }
-        .nav-item:hover, .nav-item.active {
-            color: #4f46e5; /* indigo-600 */
-            background-color: #eef2ff; /* indigo-50 */
-        }
-        .nav-item svg {
-            width: 1.5rem; /* w-6 */
-            height: 1.5rem; /* h-6 */
-            margin-bottom: 0.125rem;
-        }
-
-        /* --- History Item Styles --- */
-        .history-item {
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background-color: #f9fafb;
-        }
-        .saveContactBtn {
-            background-color: #10b981; /* emerald-500 */
-            color: white;
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            margin-top: 0.5rem;
-        }
-        .saveContactBtn:hover {
-            background-color: #059669; /* emerald-600 */
-        }
-
-        /* Utility */
-        .main-content {
-            padding-bottom: 70px; /* Space for bottom nav */
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="bg-gray-100">
 
@@ -211,6 +14,14 @@
         <!-- Header -->
         <header class="mb-6 flex justify-between items-center">
             <h1 class="text-3xl font-bold text-gray-800">MOM Generator</h1>
+            <button id="settings-btn" class="text-gray-600 hover:text-indigo-600 transition-colors" title="Settings (Ctrl+,)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6m0 6v6"></path>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path>
+                    <path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 7.76a6 6 0 0 0 0 8.49"></path>
+                </svg>
+            </button>
         </header>
 
         <!-- Main Form Card -->
@@ -391,590 +202,80 @@
         </div>
     </div>
 
-
-    <script>
-        // Ensure DOM is fully loaded before running the script
-        document.addEventListener('DOMContentLoaded', function() {
-        // --- Firebase/API Imports ---
-        // (Assuming Gemini API is accessed via fetch)
-
-        // --- DOM Elements ---
-        const momForm = document.getElementById('mom-form');
-        const recipientNameInput = document.getElementById('recipient-name');
-        const recipientPhoneInput = document.getElementById('recipient-phone');
-        const companyNameInput = document.getElementById('company-name');
-        const companyAddressInput = document.getElementById('company-address');
-        const meetingLocationInput = document.getElementById('meeting-location');
-        const participantsInput = document.getElementById('participants');
-        const messageTypeSelect = document.getElementById('message-type');
-        const rawNotesInput = document.getElementById('raw-notes');
-        const generateBtn = document.getElementById('generate-btn');
-        const generateBtnText = document.getElementById('generate-btn-text');
-        const generateBtnLoader = document.getElementById('generate-btn-loader');
-        const resultsContainer = document.getElementById('results-container');
-        const generatedMessageContainer = document.getElementById('generated-message-container');
-        const actionItemsList = document.getElementById('action-items-list');
-        const errorMessage = document.getElementById('error-message');
-
-        // Contact History
-        const contactHistoryList = document.getElementById('contact-history-list');
-
-        // Snippets
-        const manageSnippetsBtn = document.getElementById('manage-snippets-btn');
-        const snippetOverlay = document.getElementById('snippet-overlay');
-        const snippetSidebar = document.getElementById('snippet-sidebar');
-        const closeSnippetSidebarBtn = document.getElementById('close-snippet-sidebar');
-        const snippetForm = document.getElementById('snippet-form');
-        const snippetNameInput = document.getElementById('snippet-name');
-        const snippetContentInput = document.getElementById('snippet-content');
-        const savedSnippetsList = document.getElementById('saved-snippets-list');
-        const snippetButtonsContainer = document.getElementById('snippet-buttons-container');
-
-        // Selfie
-        const takeSelfieBtn = document.getElementById('take-selfie-btn');
-        const cameraModal = document.getElementById('camera-modal');
-        const cameraModalClose = document.getElementById('camera-modal-close');
-        const cameraFeed = document.getElementById('camera-feed');
-        const cameraCanvas = document.getElementById('camera-canvas');
-        const snapBtn = document.getElementById('snap-btn');
-        const selfiePreviewContainer = document.getElementById('selfie-preview-container');
-        const selfiePreview = document.getElementById('selfie-preview');
-        let selfieData = null; // Will store the base64 image data
-        let cameraStream = null;
-
-        // History
-        const historyOverlay = document.getElementById('history-overlay');
-        const historySidebar = document.getElementById('history-sidebar');
-        const closeHistorySidebarBtn = document.getElementById('close-history-sidebar');
-        const historyListContainer = document.getElementById('history-list-container');
-
-        // Bottom Nav
-        const navAddBtn = document.getElementById('nav-add-btn');
-        const navHistoryBtn = document.getElementById('nav-history-btn');
-        const navSnippetsBtn = document.getElementById('nav-snippets-btn');
-
-        // --- State ---
-        let snippets = [];
-        let contacts = {};
-        let meetingHistory = [];
-
-        // --- System Prompts for AI ---
-        const systemPrompts = {
-            mom: `You are an expert administrative assistant. Your task is to generate a concise, professional, and friendly "Minutes of Meeting" (MOM) message suitable for WhatsApp.
-- The user will provide raw notes, participant names, meeting details, and optionally, a personalized service snippet.
-- Format the output as a single JSON object with two keys: "whatsappMessage" (a string for WhatsApp) and "actionItems" (an array of strings for the user's private to-do list).
-- The "whatsappMessage" should start with "Hi [Recipient's Name]," and summarize the key discussion points, decisions, and action items for the *recipient*.
-- The "actionItems" array should *only* list tasks for the *user* (the sender), derived from the notes.
-- If a [USE_SNIPPET:...] tag is present, you MUST take the provided snippet content, personalize it based on the meeting notes, and weave it *naturally* into the "whatsappMessage". Do not just paste it.
-- Be friendly, professional, and concise.`,
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content relative" style="max-width: 600px;">
+            <button id="settings-modal-close" class="modal-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
             
-            sales: `You are an expert AI Sales Development Representative (SDR). Your task is to generate a persuasive, value-driven, and friendly sales follow-up message suitable for WhatsApp.
-- The user will provide raw notes, participant names, meeting details, and optionally, a personalized service snippet.
-- Format the output as a single JSON object with two keys: "whatsappMessage" (a string for WhatsApp) and "actionItems" (an array of strings for the user's private to-do list).
-- The "whatsappMessage" should start with "Hi [Recipient's Name]," thank them for their time, and reinforce the value proposition of the user's services, connecting it to the recipient's needs discussed in the meeting.
-- The "actionItems" array should *only* list sales-related next steps for the *user* (the sender), e.g., "Send proposal," "Follow up next Tuesday."
-- If a [USE_SNIPPET:...] tag is present, you MUST take the provided snippet content, personalize it, and make it a core, natural part of the "whatsappMessage" to drive the sale forward.
-- The message should be enthusiastic, confident, and clearly define the next step (e.g., "I'll send over that proposal by EOD").`
-        };
-
-        // --- API Call (via Netlify Function) ---
-        async function callGeminiAPI(userQuery, systemPrompt) {
-            // Call our secure Netlify Function instead of Gemini directly
-            const functionUrl = '/.netlify/functions/generate-mom';
-
-            const payload = {
-                userQuery: userQuery,
-                systemPrompt: systemPrompt
-            };
-
-            // Exponential backoff for retries
-            let response;
-            let delay = 1000;
-            for (let i = 0; i < 5; i++) {
-                try {
-                    response = await fetch(functionUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (response.ok) {
-                        break; // Success
-                    } else if (response.status === 429 || response.status >= 500) {
-                        // Retry on rate limit or server error
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        delay *= 2;
-                    } else {
-                        // Don't retry on other client errors
-                        const errorData = await response.json();
-                        throw new Error(errorData.error || `API Error: ${response.status} ${response.statusText}`);
-                    }
-                } catch (error) {
-                    if (i === 4) throw error; // Re-throw last error
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay *= 2;
-                }
-            }
-
-            if (!response.ok) {
-                throw new Error(`API call failed after retries: ${response.statusText}`);
-            }
-
-            const result = await response.json();
-            return result;
-        }
-        
-        // --- Main Form Logic ---
-        momForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Settings</h2>
             
-            // 1. Get all form data
-            const recipientName = recipientNameInput.value.trim();
-            const recipientPhone = recipientPhoneInput.value.trim();
-            const companyName = companyNameInput.value.trim();
-            const companyAddress = companyAddressInput.value.trim();
-            const meetingLocation = meetingLocationInput.value.trim();
-            const participants = participantsInput.value.trim();
-            const messageType = messageTypeSelect.value;
-            const rawNotes = rawNotesInput.value.trim();
-
-            if (!recipientName || !recipientPhone || !rawNotes) {
-                showError("Please fill in Recipient's Name, Phone, and Raw Notes.");
-                return;
-            }
-
-            // 2. Show loading state
-            setLoading(true);
-            showError(null);
-            resultsContainer.classList.add('hidden');
-
-            try {
-                // 3. Find requested snippet
-                const snippetTag = rawNotes.match(/\[USE_SNIPPET: (.*?)\]/);
-                let snippetContent = null;
-                if (snippetTag) {
-                    const snippetName = snippetTag[1];
-                    const foundSnippet = snippets.find(s => s.name === snippetName);
-                    if (foundSnippet) {
-                        snippetContent = foundSnippet.content;
-                    }
-                }
-
-                // 4. Construct User Query
-                let userQuery = `
-                Meeting Details:
-                - Recipient: ${recipientName}
-                - Company: ${companyName || 'N/A'}
-                - Address: ${companyAddress || 'N/A'}
-                - Location: ${meetingLocation || 'N/A'}
-                - Participants: ${participants || 'N/A'}
-
-                Raw Meeting Notes:
-                ${rawNotes}
-                `;
-
-                if (snippetContent) {
-                    userQuery += `\n\nPersonalize and integrate this service snippet:
-                    ${snippetContent}
-                    `;
-                }
-
-                // 5. Get System Prompt
-                const systemPrompt = systemPrompts[messageType];
+            <form id="settings-form">
+                <!-- Provider Selection -->
+                <div class="mb-5">
+                    <label for="ai-provider" class="block text-sm font-medium text-gray-700 mb-2">AI Provider</label>
+                    <select id="ai-provider" class="form-input">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="openrouter">OpenRouter</option>
+                    </select>
+                </div>
                 
-                // 6. Call AI
-                const aiResponse = await callGeminiAPI(userQuery, systemPrompt);
-
-                // 7. Display results
-                generatedMessageContainer.textContent = aiResponse.whatsappMessage;
-                actionItemsList.innerHTML = ''; // Clear old items
-                if (aiResponse.actionItems && aiResponse.actionItems.length > 0) {
-                    aiResponse.actionItems.forEach(item => {
-                        const li = document.createElement('li');
-                        li.textContent = item;
-                        actionItemsList.appendChild(li);
-                    });
-                } else {
-                    actionItemsList.innerHTML = '<li>No action items for you.</li>';
-                }
-                resultsContainer.classList.remove('hidden');
-
-                // 8. Save to contacts and history
-                saveContact(recipientName, recipientPhone);
-                saveMeetingToHistory({
-                    id: Date.now().toString(),
-                    recipientName,
-                    recipientPhone,
-                    companyName,
-                    companyAddress,
-                    meetingLocation,
-                    participants,
-                    messageType,
-                    rawNotes,
-                    generatedMessage: aiResponse.whatsappMessage,
-                    actionItems: aiResponse.actionItems,
-                    selfieData,
-                    timestamp: new Date().toISOString()
-                });
-
-                // 9. Open WhatsApp
-                const whatsappUrl = `https://wa.me/${recipientPhone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(aiResponse.whatsappMessage)}`;
-                window.open(whatsappUrl, '_blank');
-
-                // 10. Clear form for next entry
-                clearForm();
-
-            } catch (error) {
-                console.error("Error in form submission:", error);
-                showError(`Error: ${error.message}`);
-            } finally {
-                setLoading(false);
-            }
-        });
-
-        function clearForm() {
-            momForm.reset();
-            selfieData = null;
-            selfiePreviewContainer.classList.add('hidden');
-            resultsContainer.classList.add('hidden');
-        }
-
-        // --- Loading & Error UI ---
-        function setLoading(isLoading) {
-            if (isLoading) {
-                generateBtn.disabled = true;
-                generateBtnText.classList.add('hidden');
-                generateBtnLoader.classList.remove('hidden');
-            } else {
-                generateBtn.disabled = false;
-                generateBtnText.classList.remove('hidden');
-                generateBtnLoader.classList.add('hidden');
-            }
-        }
-
-        function showError(message) {
-            if (message) {
-                errorMessage.textContent = message;
-                errorMessage.classList.remove('hidden');
-            } else {
-                errorMessage.classList.add('hidden');
-            }
-        }
-
-        // --- Contact History (LocalStorage) ---
-        function loadContacts() {
-            contacts = JSON.parse(localStorage.getItem('momContacts')) || {};
-            renderContactDatalist();
-        }
-
-        function saveContact(name, phone) {
-            if (!name || !phone) return;
-            contacts[name.toLowerCase()] = { name, phone }; // Store by lowercase name for easy lookup
-            localStorage.setItem('momContacts', JSON.stringify(contacts));
-            renderContactDatalist();
-        }
-
-        function renderContactDatalist() {
-            contactHistoryList.innerHTML = '';
-            for (const key in contacts) {
-                const option = document.createElement('option');
-                option.value = contacts[key].name;
-                contactHistoryList.appendChild(option);
-            }
-        }
-
-        recipientNameInput.addEventListener('change', () => {
-            const contact = contacts[recipientNameInput.value.toLowerCase()];
-            if (contact) {
-                recipientPhoneInput.value = contact.phone;
-            }
-        });
-
-        // --- Snippet Logic (LocalStorage) ---
-        function loadSnippets() {
-            snippets = JSON.parse(localStorage.getItem('momSnippets')) || [];
-            renderSnippetButtons();
-            renderSavedSnippetsList();
-        }
-
-        function saveSnippets() {
-            localStorage.setItem('momSnippets', JSON.stringify(snippets));
-            renderSnippetButtons();
-            renderSavedSnippetsList();
-        }
-
-        function renderSnippetButtons() {
-            snippetButtonsContainer.innerHTML = '';
-            snippets.forEach(snippet => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.className = 'btn btn-secondary text-xs !py-1 !px-2';
-                button.textContent = `+ ${snippet.name}`;
-                button.onclick = () => addSnippetToNotes(snippet);
-                snippetButtonsContainer.appendChild(button);
-            });
-        }
-
-        function renderSavedSnippetsList() {
-            savedSnippetsList.innerHTML = '';
-            if (snippets.length === 0) {
-                savedSnippetsList.innerHTML = '<p class="text-sm text-gray-500">No snippets saved.</p>';
-                return;
-            }
-            snippets.forEach((snippet, index) => {
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-start p-2 border-b border-gray-100';
-                div.innerHTML = `
-                    <div class="mr-2">
-                        <p class="font-medium text-sm text-gray-800">${snippet.name}</p>
-                        <p class="text-xs text-gray-500 truncate">${snippet.content}</p>
+                <!-- API Key Input -->
+                <div class="mb-5">
+                    <label for="api-key-input" class="block text-sm font-medium text-gray-700 mb-2">
+                        <span id="provider-label">Gemini API Key</span>
+                    </label>
+                    <div class="relative">
+                        <input type="password" id="api-key-input" class="form-input pr-10" placeholder="Enter your API key">
+                        <button type="button" id="toggle-api-key-visibility" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                            <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
                     </div>
-                    <button class="btn btn-danger !py-1 !px-2 text-xs" data-index="${index}">Delete</button>
-                `;
-                savedSnippetsList.appendChild(div);
-            });
-
-            // Add delete event listeners
-            savedSnippetsList.querySelectorAll('.btn-danger').forEach(button => {
-                button.addEventListener('click', () => {
-                    const index = parseInt(button.dataset.index, 10);
-                    snippets.splice(index, 1);
-                    saveSnippets();
-                });
-            });
-        }
-
-        function addSnippetToNotes(snippet) {
-            // Add a tag to the notes. The AI will use this to find the full content.
-            rawNotesInput.value += `\n[USE_SNIPPET: ${snippet.name}]`;
-            rawNotesInput.focus();
-        }
-
-        snippetForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = snippetNameInput.value.trim();
-            const content = snippetContentInput.value.trim();
-            if (name && content) {
-                snippets.push({ name, content });
-                saveSnippets();
-                snippetForm.reset();
-            }
-        });
-        
-        // --- Selfie Logic ---
-        takeSelfieBtn.addEventListener('click', async () => {
-            cameraModal.style.display = 'flex';
-            try {
-                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-                cameraFeed.srcObject = cameraStream;
-            } catch (err) {
-                console.error("Error accessing camera:", err);
-                showError("Could not access camera. Please check permissions.");
-                cameraModal.style.display = 'none';
-            }
-        });
-
-        function closeCamera() {
-            if (cameraStream) {
-                cameraStream.getTracks().forEach(track => track.stop());
-            }
-            cameraStream = null;
-            cameraModal.style.display = 'none';
-        }
-
-        cameraModalClose.addEventListener('click', closeCamera);
-
-        snapBtn.addEventListener('click', () => {
-            const videoWidth = cameraFeed.videoWidth;
-            const videoHeight = cameraFeed.videoHeight;
-            cameraCanvas.width = videoWidth;
-            cameraCanvas.height = videoHeight;
-            
-            const context = cameraCanvas.getContext('2d');
-            context.drawImage(cameraFeed, 0, 0, videoWidth, videoHeight);
-            
-            selfieData = cameraCanvas.toDataURL('image/jpeg', 0.8);
-            selfiePreview.src = selfieData;
-            selfiePreviewContainer.classList.remove('hidden');
-            
-            closeCamera();
-        });
-
-        // --- Meeting History (LocalStorage) ---
-        function loadMeetingHistory() {
-            meetingHistory = JSON.parse(localStorage.getItem('momMeetingHistory')) || [];
-            renderMeetingHistory();
-        }
-
-        function saveMeetingToHistory(meeting) {
-            meetingHistory.unshift(meeting); // Add to beginning
-            if (meetingHistory.length > 50) { // Keep history to 50 items
-                meetingHistory.pop();
-            }
-            localStorage.setItem('momMeetingHistory', JSON.stringify(meetingHistory));
-            renderMeetingHistory();
-        }
-
-        function renderMeetingHistory() {
-            historyListContainer.innerHTML = '';
-            if (meetingHistory.length === 0) {
-                historyListContainer.innerHTML = '<p class="text-sm text-gray-500">No meeting logs found.</p>';
-                return;
-            }
-
-            meetingHistory.forEach(meeting => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                const meetingTime = new Date(meeting.timestamp).toLocaleString();
+                    <p class="text-xs text-gray-500 mt-1">
+                        <span id="api-key-help-text">Get your API key from Google AI Studio</span>
+                    </p>
+                </div>
                 
-                div.innerHTML = `
-                    <div class="flex justify-between items-center mb-2">
-                        <p class="font-bold text-lg text-gray-800">${meeting.recipientName}</p>
-                        <button class="btn-danger !text-xs !py-1 !px-2" data-id="${meeting.id}">Delete</button>
-                    </div>
-                    <p class="text-sm text-gray-600">${meeting.companyName || 'No Company'}</p>
-                    <p class="text-sm text-gray-600 mb-2">${meetingTime}</p>
-                    
-                    ${meeting.selfieData ? `<img src="${meeting.selfieData}" class="w-20 h-20 rounded-lg border border-gray-200 mb-2">` : ''}
-                    
-                    <p class="text-xs font-medium text-gray-700 mt-3">Message Sent:</p>
-                    <div class="text-xs text-gray-600 p-2 bg-gray-50 rounded border border-gray-200 whitespace-pre-wrap">${meeting.generatedMessage}</div>
-                    
-                    <button class="saveContactBtn" data-name="${meeting.recipientName}" data-phone="${meeting.recipientPhone}" data-company="${meeting.companyName || ''}" data-address="${meeting.companyAddress || ''}">Save Contact</button>
-                `;
-                historyListContainer.appendChild(div);
-            });
-
-            // Add delete listeners
-            historyListContainer.querySelectorAll('.btn-danger').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.dataset.id;
-                    meetingHistory = meetingHistory.filter(m => m.id !== id);
-                    localStorage.setItem('momMeetingHistory', JSON.stringify(meetingHistory));
-                    renderMeetingHistory();
-                });
-            });
-
-            // Add Save Contact listeners
-            historyListContainer.querySelectorAll('.saveContactBtn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    saveContactToDevice(btn.dataset);
-                });
-            });
-        }
-
-        // --- Save Contact to Device (vCard) ---
-        function saveContactToDevice(contact) {
-            const { name, phone, company, address } = contact;
-            
-            const vCard = `BEGIN:VCARD
-VERSION:3.0
-FN:${name}
-TEL;TYPE=CELL:${phone}
-ORG:${company}
-ADR;TYPE=WORK:;;${address};;;
-END:VCARD`;
-
-            const blob = new Blob([vCard], { type: 'text/vcard;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${name.replace(/\s/g, '_')}.vcf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // --- Navigation Logic ---
-        function openHistorySidebar() {
-            // Close snippet sidebar if open
-            closeSnippetSidebar();
-            
-            // Show overlay first
-            historyOverlay.style.display = 'block';
-            
-            // Add open class after a brief delay for smooth transition
-            setTimeout(() => {
-                historySidebar.classList.add('open');
-            }, 10);
-        }
-
-        function closeHistorySidebar() {
-            // Remove open class first for transition
-            historySidebar.classList.remove('open');
-            
-            // Hide overlay after transition completes
-            setTimeout(() => {
-                historyOverlay.style.display = 'none';
-            }, 300);
-        }
-
-        function openSnippetSidebar() {
-            // Close history sidebar if open
-            closeHistorySidebar();
-            
-            // Show overlay first
-            snippetOverlay.style.display = 'block';
-            
-            // Add open class after a brief delay for smooth transition
-            setTimeout(() => {
-                snippetSidebar.classList.add('open');
-            }, 10);
-        }
-
-        function closeSnippetSidebar() {
-            // Remove open class first for transition
-            snippetSidebar.classList.remove('open');
-            
-            // Hide overlay after transition completes
-            setTimeout(() => {
-                snippetOverlay.style.display = 'none';
-            }, 300);
-        }
-
-        navHistoryBtn.addEventListener('click', () => {
-            openHistorySidebar();
-            navHistoryBtn.classList.add('active');
-            navAddBtn.classList.remove('active');
-            navSnippetsBtn.classList.remove('active');
-        });
-        navSnippetsBtn.addEventListener('click', () => {
-            openSnippetSidebar();
-            navSnippetsBtn.classList.add('active');
-            navAddBtn.classList.remove('active');
-            navHistoryBtn.classList.remove('active');
-        });
-        navAddBtn.addEventListener('click', () => {
-            // This button is just to show active state, form is always visible
-            closeHistorySidebar();
-            closeSnippetSidebar();
-            navAddBtn.classList.add('active');
-            navHistoryBtn.classList.remove('active');
-            navSnippetsBtn.classList.remove('active');
-        });
-
-        historyOverlay.addEventListener('click', closeHistorySidebar);
-        closeHistorySidebarBtn.addEventListener('click', closeHistorySidebar);
-        snippetOverlay.addEventListener('click', closeSnippetSidebar);
-        closeSnippetSidebarBtn.addEventListener('click', closeSnippetSidebar);
-        
-        manageSnippetsBtn.addEventListener('click', openSnippetSidebar);
+                <!-- Model Selection -->
+                <div class="mb-5">
+                    <label for="model-select" class="block text-sm font-medium text-gray-700 mb-2">
+                        Default Model
+                        <span id="model-count" class="text-xs text-gray-500 ml-2"></span>
+                    </label>
+                    <select id="model-select" class="form-input" disabled>
+                        <option value="">Enter API key to load models...</option>
+                    </select>
+                </div>
+                
+                <!-- Status Messages -->
+                <div id="settings-status-message" class="mb-4 p-3 rounded-lg text-sm hidden"></div>
+                
+                <!-- Security Warning -->
+                <div class="mb-5 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p class="text-xs text-yellow-800">
+                        <strong>Security Note:</strong> API keys are stored locally in your browser. Never share your keys or use this on public computers.
+                    </p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex gap-3">
+                    <button type="button" id="settings-cancel-btn" class="btn btn-secondary flex-1">Cancel</button>
+                    <button type="submit" id="settings-save-btn" class="btn btn-primary flex-1">
+                        <span id="settings-save-text">Save Settings</span>
+                        <span id="settings-save-loader" class="hidden">Saving...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
 
-        // --- App Initialization ---
-        function init() {
-            loadContacts();
-            loadSnippets();
-            loadMeetingHistory();
-        }
-
-        // Run app
-        init();
-
-        }); // End DOMContentLoaded
-    </script>
+    <!-- Application Scripts -->
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>
 
