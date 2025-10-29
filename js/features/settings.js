@@ -1,11 +1,16 @@
-// Settings modal management
-import { CONFIG } from '../config.js';
-import { getSettings, saveSettings } from '../utils/storage.js';
+// Settings sidebar management
+import { CONFIG, DEFAULT_PROMPTS } from '../config.js';
+import { getSettings, saveSettings, getPrompts, savePrompts } from '../utils/storage.js';
 import { getModelsForProvider } from '../utils/api.js';
 
 export class SettingsManager {
     constructor() {
-        this.modal = document.getElementById('settings-modal');
+        // Sidebar elements
+        this.overlay = document.getElementById('settings-overlay');
+        this.sidebar = document.getElementById('settings-sidebar');
+        this.closeSidebarBtn = document.getElementById('close-settings-sidebar');
+        
+        // Form elements
         this.form = document.getElementById('settings-form');
         this.providerSelect = document.getElementById('ai-provider');
         this.apiKeyInput = document.getElementById('api-key-input');
@@ -19,7 +24,14 @@ export class SettingsManager {
         this.saveBtnText = document.getElementById('settings-save-text');
         this.saveBtnLoader = document.getElementById('settings-save-loader');
         
+        // Prompt elements
+        this.momPromptInput = document.getElementById('mom-prompt');
+        this.salesPromptInput = document.getElementById('sales-prompt');
+        this.resetMomPromptBtn = document.getElementById('reset-mom-prompt');
+        this.resetSalesPromptBtn = document.getElementById('reset-sales-prompt');
+        
         this.currentSettings = getSettings();
+        this.currentPrompts = getPrompts();
         
         this.init();
     }
@@ -27,12 +39,16 @@ export class SettingsManager {
     init() {
         // Event listeners
         document.getElementById('settings-btn').addEventListener('click', () => this.open());
-        document.getElementById('settings-modal-close').addEventListener('click', () => this.close());
-        document.getElementById('settings-cancel-btn').addEventListener('click', () => this.close());
+        this.closeSidebarBtn.addEventListener('click', () => this.close());
+        this.overlay.addEventListener('click', () => this.close());
         this.toggleVisibilityBtn.addEventListener('click', () => this.toggleApiKeyVisibility());
         this.providerSelect.addEventListener('change', () => this.handleProviderChange());
         this.apiKeyInput.addEventListener('input', () => this.handleApiKeyInput());
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+        
+        // Prompt reset buttons
+        this.resetMomPromptBtn.addEventListener('click', () => this.resetPrompt('mom'));
+        this.resetSalesPromptBtn.addEventListener('click', () => this.resetPrompt('sales'));
         
         // Keyboard shortcut: Ctrl+,
         document.addEventListener('keydown', (e) => {
@@ -48,11 +64,26 @@ export class SettingsManager {
 
     open() {
         this.loadCurrentSettings();
-        this.modal.style.display = 'flex';
+        this.loadCurrentPrompts();
+        
+        // Show overlay first
+        this.overlay.style.display = 'block';
+        
+        // Add open class after a brief delay for smooth transition
+        setTimeout(() => {
+            this.sidebar.classList.add('open');
+        }, 10);
     }
 
     close() {
-        this.modal.style.display = 'none';
+        // Remove open class first for transition
+        this.sidebar.classList.remove('open');
+        
+        // Hide overlay after transition completes
+        setTimeout(() => {
+            this.overlay.style.display = 'none';
+        }, 300);
+        
         this.clearStatusMessage();
     }
 
@@ -66,6 +97,12 @@ export class SettingsManager {
         if (this.currentSettings.apiKey) {
             this.loadModels();
         }
+    }
+
+    loadCurrentPrompts() {
+        this.currentPrompts = getPrompts();
+        this.momPromptInput.value = this.currentPrompts.mom || DEFAULT_PROMPTS.mom;
+        this.salesPromptInput.value = this.currentPrompts.sales || DEFAULT_PROMPTS.sales;
     }
 
     updateProviderUI() {
@@ -143,6 +180,8 @@ export class SettingsManager {
         const provider = this.providerSelect.value;
         const apiKey = this.apiKeyInput.value.trim();
         const model = this.modelSelect.value;
+        const momPrompt = this.momPromptInput.value.trim();
+        const salesPrompt = this.salesPromptInput.value.trim();
         
         if (!apiKey) {
             this.showStatusMessage('Please enter an API key', 'error');
@@ -154,19 +193,32 @@ export class SettingsManager {
             return;
         }
         
+        if (!momPrompt || !salesPrompt) {
+            this.showStatusMessage('Prompts cannot be empty', 'error');
+            return;
+        }
+        
         this.setLoading(true);
         
         try {
+            // Save API settings
             const newSettings = {
                 provider,
                 apiKey,
                 model
             };
-            
             saveSettings(newSettings);
             this.currentSettings = newSettings;
             
-            this.showStatusMessage('Settings saved successfully!', 'success');
+            // Save prompts
+            const newPrompts = {
+                mom: momPrompt,
+                sales: salesPrompt
+            };
+            savePrompts(newPrompts);
+            this.currentPrompts = newPrompts;
+            
+            this.showStatusMessage('Settings and prompts saved successfully!', 'success');
             
             setTimeout(() => {
                 this.close();
@@ -177,6 +229,17 @@ export class SettingsManager {
             this.showStatusMessage('Error saving settings', 'error');
         } finally {
             this.setLoading(false);
+        }
+    }
+
+    resetPrompt(type) {
+        if (confirm(`Reset ${type === 'mom' ? 'Meeting Summary' : 'Sales Follow-up'} prompt to default?`)) {
+            if (type === 'mom') {
+                this.momPromptInput.value = DEFAULT_PROMPTS.mom;
+            } else {
+                this.salesPromptInput.value = DEFAULT_PROMPTS.sales;
+            }
+            this.showStatusMessage(`${type === 'mom' ? 'MOM' : 'Sales'} prompt reset to default`, 'success');
         }
     }
 

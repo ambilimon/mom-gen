@@ -9,7 +9,8 @@ export const CONFIG = {
         CONTACTS: 'momContacts',
         SNIPPETS: 'momSnippets',
         HISTORY: 'momMeetingHistory',
-        SETTINGS: 'momSettings'
+        SETTINGS: 'momSettings',
+        PROMPTS: 'momPrompts'
     },
     
     // Default Settings
@@ -41,8 +42,8 @@ export const CONFIG = {
     }
 };
 
-// System Prompts for AI
-export const SYSTEM_PROMPTS = {
+// Default System Prompts for AI
+export const DEFAULT_PROMPTS = {
     mom: `You are an expert administrative assistant. Your task is to generate a concise, professional, and friendly "Minutes of Meeting" (MOM) message suitable for WhatsApp.
 - The user will provide raw notes, participant names, meeting details, and optionally, a personalized service snippet.
 - Format the output as a single JSON object with two keys: "whatsappMessage" (a string for WhatsApp) and "actionItems" (an array of strings for the user's private to-do list).
@@ -59,3 +60,6 @@ export const SYSTEM_PROMPTS = {
 - If a [USE_SNIPPET:...] tag is present, you MUST take the provided snippet content, personalize it, and make it a core, natural part of the "whatsappMessage" to drive the sale forward.
 - The message should be enthusiastic, confident, and clearly define the next step (e.g., "I'll send over that proposal by EOD").`
 };
+
+// Backward compatibility - export as SYSTEM_PROMPTS too
+export const SYSTEM_PROMPTS = DEFAULT_PROMPTS;

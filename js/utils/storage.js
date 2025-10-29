@@ -1,5 +1,5 @@
 // LocalStorage utility functions
-import { CONFIG } from '../config.js';
+import { CONFIG, DEFAULT_PROMPTS } from '../config.js';
 
 /**
  * Get data from localStorage
@@ -94,4 +94,16 @@ export function getSettings() {
 
 export function saveSettings(settings) {
     return setStorage(CONFIG.STORAGE_KEYS.SETTINGS, settings);
+}
+
+export function getPrompts() {
+    return getStorage(CONFIG.STORAGE_KEYS.PROMPTS, DEFAULT_PROMPTS);
+}
+
+export function savePrompts(prompts) {
+    return setStorage(CONFIG.STORAGE_KEYS.PROMPTS, prompts);
+}
+
+export function resetPromptsToDefault() {
+    return setStorage(CONFIG.STORAGE_KEYS.PROMPTS, DEFAULT_PROMPTS);
 }

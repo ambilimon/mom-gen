@@ -1,5 +1,6 @@
 // Main form submission logic
 import { SYSTEM_PROMPTS } from '../config.js';
+import { getPrompts } from '../utils/storage.js';
 import { callGeminiAPI } from '../utils/api.js';
 
 export class FormManager {
@@ -89,8 +90,9 @@ ${snippetContent}
 `;
             }
 
-            // 5. Get System Prompt
-            const systemPrompt = SYSTEM_PROMPTS[messageType];
+            // 5. Get System Prompt (use custom if available, otherwise default)
+            const customPrompts = getPrompts();
+            const systemPrompt = customPrompts[messageType] || SYSTEM_PROMPTS[messageType];
             
             // 6. Call AI
             const aiResponse = await callGeminiAPI(userQuery, systemPrompt);

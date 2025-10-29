@@ -17,6 +17,10 @@ export class NavigationManager {
         this.closeSnippetSidebarBtn = document.getElementById('close-snippet-sidebar');
         this.manageSnippetsBtn = document.getElementById('manage-snippets-btn');
         
+        // Settings sidebar
+        this.settingsOverlay = document.getElementById('settings-overlay');
+        this.settingsSidebar = document.getElementById('settings-sidebar');
+        
         this.init();
     }
 
@@ -49,8 +53,9 @@ export class NavigationManager {
     }
 
     openHistorySidebar() {
-        // Close snippet sidebar if open
+        // Close other sidebars
         this.closeSnippetSidebar();
+        this.closeSettingsSidebar();
         
         // Show overlay first
         this.historyOverlay.style.display = 'block';
@@ -74,8 +79,9 @@ export class NavigationManager {
     }
 
     openSnippetSidebar() {
-        // Close history sidebar if open
+        // Close other sidebars
         this.closeHistorySidebar();
+        this.closeSettingsSidebar();
         
         // Show overlay first
         this.snippetOverlay.style.display = 'block';
@@ -101,6 +107,19 @@ export class NavigationManager {
     closeAllSidebars() {
         this.closeHistorySidebar();
         this.closeSnippetSidebar();
+        this.closeSettingsSidebar();
+    }
+
+    closeSettingsSidebar() {
+        if (this.settingsSidebar && this.settingsOverlay) {
+            // Remove open class first for transition
+            this.settingsSidebar.classList.remove('open');
+            
+            // Hide overlay after transition completes
+            setTimeout(() => {
+                this.settingsOverlay.style.display = 'none';
+            }, 300);
+        }
     }
 
     setActiveNav(section) {
